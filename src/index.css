@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --color-navy: #1F3864;
+  --color-navy-light: #2a4a7f;
+  --color-navy-dark: #162847;
+  --color-blue-accent: #4472C4;
+  --color-blue-accent-light: #5a85d0;
+  --color-gain: #16A34A;
+  --color-gain-bg: #F0FDF4;
+  --color-loss: #DC2626;
+  --color-loss-bg: #FEF2F2;
+  --color-surface: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-muted: #64748B;
+  --color-subtle: #94A3B8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono-data {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Hide scrollbar by default, show on hover */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+  opacity: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Table row hover */
+.holdings-row:hover {
+  background-color: #F1F5F9;
+}
+.tx-row:hover {
+  background-color: #F1F5F9;
+}
+
+/* Transition defaults */
+button, a, input, select {
+  transition: all 0.15s ease;
+}
+
+/* Range input styling */
+input[type="range"] {
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #E2E8F0;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #4472C4;
+  cursor: pointer;
+}
