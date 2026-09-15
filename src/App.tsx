@@ -55,39 +55,49 @@ export default function App() {
     };
     setTransactions((prev) => [newTx, ...prev]);
 
-    setHoldings((prev) => {
-      if (type === "BUY") {
-        const existing = prev.find((h) => h.Symbol === symbol);
-        if (existing) {
-          return prev.map((h) => {
-            if (h.Symbol !== symbol) return h;
-            const newQty = h.Quantity + qty;
-            const newAvg = (h.Quantity * h.AvgCostPrice + qty * price) / newQty;
-            const newMV = newQty * h.CurrentPrice;
-            const newGL = newMV - newQty * newAvg;
-            return { ...h, Quantity: newQty, AvgCostPrice: newAvg, MarketValue: newMV, GainLoss: newGL, GainLossPct: (newGL / (newQty * newAvg)) * 100 };
-          });
-        }
-        return [...prev, {
+    // Compute the updated holdings array once, so both setHoldings and the
+    // portfolio TotalValue calculation below use the SAME fresh data —
+    // previously TotalValue read the stale pre-update `holdings` state.
+    let newHoldings: Holding[];
+    if (type === "BUY") {
+      const existing = holdings.find((h) => h.Symbol === symbol);
+      if (existing) {
+        newHoldings = holdings.map((h) => {
+          if (h.Symbol !== symbol) return h;
+          const newQty = h.Quantity + qty;
+          const newAvg = (h.Quantity * h.AvgCostPrice + qty * price) / newQty;
+          const newMV = newQty * h.CurrentPrice;
+          const newGL = newMV - newQty * newAvg;
+          return { ...h, Quantity: newQty, AvgCostPrice: newAvg, MarketValue: newMV, GainLoss: newGL, GainLossPct: (newGL / (newQty * newAvg)) * 100 };
+        });
+      } else {
+        newHoldings = [...holdings, {
           Symbol: symbol, InstrumentName: symbol, Sector: "—",
           Quantity: qty, AvgCostPrice: price, CurrentPrice: price,
           MarketValue: qty * price, GainLoss: 0, GainLossPct: 0,
         }];
-      } else {
-        return prev.map((h) => {
-          if (h.Symbol !== symbol) return h;
-          const newQty = h.Quantity - qty;
-          if (newQty <= 0) return null;
-          const newMV = newQty * h.CurrentPrice;
-          const newGL = newMV - newQty * h.AvgCostPrice;
-          return { ...h, Quantity: newQty, MarketValue: newMV, GainLoss: newGL, GainLossPct: (newGL / (newQty * h.AvgCostPrice)) * 100 };
-        }).filter(Boolean) as Holding[];
       }
-    });
+    } else {
+      newHoldings = holdings.map((h) => {
+        if (h.Symbol !== symbol) return h;
+        const newQty = h.Quantity - qty;
+        if (newQty <= 0) return null;
+        const newMV = newQty * h.CurrentPrice;
+        const newGL = newMV - newQty * h.AvgCostPrice;
+        return { ...h, Quantity: newQty, MarketValue: newMV, GainLoss: newGL, GainLossPct: (newGL / (newQty * h.AvgCostPrice)) * 100 };
+      }).filter(Boolean) as Holding[];
+    }
+
+    setHoldings(newHoldings);
 
     setPortfolio((p) => {
       const newCash = type === "BUY" ? p.CashBalance - totalAmount : p.CashBalance + totalAmount;
-      return { ...p, CashBalance: Math.max(0, newCash), TotalValue: Math.max(0, newCash) + holdings.reduce((s, h) => s + h.MarketValue, 0) };
+      const clampedCash = Math.max(0, newCash);
+      return {
+        ...p,
+        CashBalance: clampedCash,
+        TotalValue: clampedCash + newHoldings.reduce((s, h) => s + h.MarketValue, 0),
+      };
     });
   }
 
