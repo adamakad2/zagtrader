@@ -1,4 +1,4 @@
-import type { Holding, ModalType, Screen } from "../types";
+import type { Holding, ModalType, Screen, AllocationSlice } from "../types";
 import { AllocationDonut, PortfolioLineChart } from "./Charts";
 import NavBar from "./NavBar";
 
@@ -11,6 +11,7 @@ interface Props {
   totalValue: number;
   cashBalance: number;
   holdings: Holding[];
+  allocation: AllocationSlice[];
   onOpenModal: (type: ModalType) => void;
   onNavigate: (screen: Screen) => void;
   onViewInstrument: (symbol: string) => void;
@@ -39,6 +40,7 @@ export default function Dashboard({
   totalValue,
   cashBalance,
   holdings,
+  allocation,
   onOpenModal,
   onNavigate,
   onViewInstrument,
@@ -131,7 +133,7 @@ export default function Dashboard({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="bg-white rounded-2xl p-6" style={{ border: "1px solid #E2E8F0" }}>
             <h3 className="font-semibold text-gray-900 text-sm mb-4">Portfolio Allocation</h3>
-            <AllocationDonut totalValue={totalValue} />
+            <AllocationDonut totalValue={totalValue} allocationData={allocation} />
           </div>
           <div className="lg:col-span-2 bg-white rounded-2xl p-6" style={{ border: "1px solid #E2E8F0" }}>
             <h3 className="font-semibold text-gray-900 text-sm mb-4">Portfolio Value Over Time</h3>

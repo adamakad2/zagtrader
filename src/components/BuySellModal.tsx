@@ -1,13 +1,6 @@
 import { useState } from "react";
 import type { Holding, ModalType } from "../types";
-import { instrumentCatalog } from "../data";
-
-// Sync INSTRUMENTS from the catalog so prices are always consistent
-const INSTRUMENTS = instrumentCatalog.map((i) => ({
-  Symbol: i.Symbol,
-  InstrumentName: i.InstrumentName,
-  CurrentPrice: i.CurrentPrice,
-}));
+import type { InstrumentListItem } from "../api";
 
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
@@ -16,20 +9,21 @@ function fmt(v: number) {
 interface Props {
   mode: ModalType;
   holdings: Holding[];
+  instruments: InstrumentListItem[];
   prefilledSymbol?: string;
   onClose: () => void;
   onConfirm: (symbol: string, qty: number, price: number, type: "BUY" | "SELL") => void;
 }
 
-export default function BuySellModal({ mode, holdings, prefilledSymbol, onClose, onConfirm }: Props) {
+export default function BuySellModal({ mode, holdings, instruments, prefilledSymbol, onClose, onConfirm }: Props) {
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<(typeof INSTRUMENTS)[0] | null>(
-    prefilledSymbol ? INSTRUMENTS.find((i) => i.Symbol === prefilledSymbol) ?? null : null
+  const [selected, setSelected] = useState<InstrumentListItem | null>(
+    prefilledSymbol ? instruments.find((i) => i.Symbol === prefilledSymbol) ?? null : null
   );
   const [quantity, setQuantity] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
-  const filtered = INSTRUMENTS.filter(
+  const filtered = instruments.filter(
     (i) =>
       i.Symbol.toLowerCase().includes(search.toLowerCase()) ||
       i.InstrumentName.toLowerCase().includes(search.toLowerCase())

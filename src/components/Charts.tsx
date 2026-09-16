@@ -5,16 +5,14 @@ import {
   Cell,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Area,
   AreaChart,
 } from "recharts";
-import { portfolioHistory, allocationData } from "../data";
-import type { DateRange } from "../types";
+import { portfolioHistory } from "../data";
+import type { DateRange, AllocationSlice } from "../types";
 
 const ALLOCATION_COLORS = [
   "#4472C4",
@@ -35,9 +33,10 @@ function fmtFull(v: number) {
 
 interface DonutChartProps {
   totalValue: number;
+  allocationData: AllocationSlice[];
 }
 
-export function AllocationDonut({ totalValue }: DonutChartProps) {
+export function AllocationDonut({ totalValue, allocationData }: DonutChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const active = activeIndex !== null ? allocationData[activeIndex] : null;
