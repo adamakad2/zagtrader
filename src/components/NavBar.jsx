@@ -44,6 +44,15 @@ const NAV_LINKS = [
       </svg>
     ),
   },
+  {
+    screen: 'watchlist',
+    label:  'Watchlist',
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z" />
+      </svg>
+    ),
+  },
 ];
 
 export default function NavBar({ activeScreen, onNavigate, onLogout }) {

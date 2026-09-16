@@ -18,6 +18,7 @@ import TransactionHistory from './components/TransactionHistory';
 import InstrumentDetail   from './components/InstrumentDetail';
 import Account            from './components/Account';
 import Performance        from './components/Performance';
+import Watchlist          from './components/Watchlist';
 
 // ── Modals ─────────────────────────────────────────────────────────────
 import BuySellModal          from './components/BuySellModal';
@@ -29,6 +30,7 @@ import {
   initialUserProfile,
   initialHoldings,
   initialTransactions,
+  initialWatchlist,
   instrumentCatalog,
 } from './data';
 
@@ -49,6 +51,7 @@ export default function App() {
   const [holdings,      setHoldings]      = useState([...initialHoldings]);
   const [transactions,  setTransactions]  = useState([...initialTransactions]);
   const [userProfile,   setUserProfile]   = useState({ ...initialUserProfile });
+  const [watchlist,     setWatchlist]     = useState([...initialWatchlist]);
 
   // ── Modal state ───────────────────────────────────────────────────────
   // modalType: null | 'buy' | 'sell' | 'deposit' | 'withdraw'
@@ -212,6 +215,17 @@ export default function App() {
   }
 
   // ─────────────────────────────────────────────────────────────────────
+  // Business logic: Watchlist
+  // ─────────────────────────────────────────────────────────────────────
+
+  /** Adds a symbol if it's not already watched, removes it if it is */
+  function handleToggleWatchlist(symbol) {
+    setWatchlist(prev =>
+      prev.includes(symbol) ? prev.filter(s => s !== symbol) : [...prev, symbol]
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
   // Render
   // ─────────────────────────────────────────────────────────────────────
 
@@ -269,7 +283,19 @@ export default function App() {
         <InstrumentDetail
           symbol={instrumentSymbol}
           holdings={holdings}
+          watchlist={watchlist}
+          onToggleWatchlist={handleToggleWatchlist}
           onOpenModal={openModal}
+          {...navProps}
+        />
+      )}
+
+      {screen === 'watchlist' && (
+        <Watchlist
+          watchlist={watchlist}
+          holdings={holdings}
+          onToggleWatchlist={handleToggleWatchlist}
+          onViewInstrument={viewInstrument}
           {...navProps}
         />
       )}

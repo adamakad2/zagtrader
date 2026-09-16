@@ -14,16 +14,58 @@ export default function Login({ onLogin }) {
   const [mode, setMode] = useState('login');
 
   // Controlled inputs
-  const [name,     setName]     = useState('');
-  const [email,    setEmail]    = useState('');
-  const [password, setPassword] = useState('');
+  const [name,        setName]        = useState('');
+  const [email,       setEmail]       = useState('');
+  const [password,    setPassword]    = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
 
   // Track the submit-button loading state
   const [loading, setLoading]   = useState(false);
+  // Inline validation error shown under the date-of-birth field
+  const [ageError, setAgeError] = useState('');
+
+  // The latest date someone could pick and still be 18+ today —
+  // used as the <input type="date"> max attribute for a nicer picker,
+  // but the real enforcement happens in handleSubmit below.
+  const latestValidDob = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 18);
+    return d.toISOString().slice(0, 10);
+  })();
+
+  /** Returns the person's age in whole years for a given YYYY-MM-DD string */
+  function calculateAge(dobString) {
+    const dob = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return age;
+  }
 
   /** Simulate an auth request, then call the parent callback */
   function handleSubmit(e) {
     e.preventDefault();
+    setAgeError('');
+
+    if (mode === 'signup') {
+      if (!dateOfBirth) {
+        setAgeError('Date of birth is required.');
+        return;
+      }
+      const dob = new Date(dateOfBirth);
+      if (dob > new Date()) {
+        setAgeError('Date of birth cannot be in the future.');
+        return;
+      }
+      if (calculateAge(dateOfBirth) < 18) {
+        setAgeError('You must be at least 18 years old to create a Zagtrader account.');
+        return;
+      }
+    }
+
     setLoading(true);
     // In a real app this would hit an auth API endpoint
     setTimeout(() => {
@@ -93,6 +135,24 @@ export default function Login({ onLogin }) {
                     placeholder="Alex Johnson"
                     required
                   />
+                </div>
+              )}
+
+              {/* Date of birth — signup only. Zagtrader requires account
+                  holders to be 18+; enforced in handleSubmit above. */}
+              {mode === 'signup' && (
+                <div className="login-field">
+                  <label className="field-label">Date of birth</label>
+                  <input
+                    className={`field-input${ageError ? ' field-input--error' : ''}`}
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={e => { setDateOfBirth(e.target.value); setAgeError(''); }}
+                    max={latestValidDob}
+                    required
+                  />
+                  <p className="login-field__hint">You must be 18 or older to create an account.</p>
+                  {ageError && <p className="login-field__error">{ageError}</p>}
                 </div>
               )}
 

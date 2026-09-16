@@ -20,6 +20,25 @@
   .instr__hero-top { flex-direction: row; align-items: flex-start; justify-content: space-between; }
 }
 .instr__hero-left { display: flex; align-items: flex-start; gap: 16px; }
+
+.instr__watchlist-btn {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #FBBF24;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.instr__watchlist-btn:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+}
 .instr__hero-icon {
   width: 48px;
   height: 48px;

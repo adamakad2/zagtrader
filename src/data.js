@@ -21,6 +21,12 @@ export const initialUserProfile = {
   CreatedAt: '2024-01-08',
 };
 
+// ─── Watchlist ────────────────────────────────────────────────────────────────
+// Symbols the user is tracking but doesn't necessarily own.
+// Just an array of ticker strings — full instrument info is looked up
+// from instrumentCatalog wherever it's displayed.
+export const initialWatchlist = ['NVDA', 'AMZN', 'META'];
+
 // ─── Holdings ─────────────────────────────────────────────────────────────────
 // One row per stock currently owned in the portfolio.
 // GainLoss = (CurrentPrice - AvgCostPrice) * Quantity

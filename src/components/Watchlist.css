@@ -1,0 +1,95 @@
+/* Watchlist.css */
+
+.watchlist-page { min-height: 100vh; background: var(--surface); }
+.watchlist__main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Page header */
+.watchlist__header { }
+.watchlist__title { font-size: var(--text-2xl); font-weight: 800; color: var(--text-primary); }
+.watchlist__sub   { font-size: var(--text-sm);  color: var(--text-muted); margin-top: 2px; }
+
+/* Add-to-watchlist card */
+.watchlist__add-card { padding: 20px; position: relative; }
+
+.watchlist__search-results {
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.watchlist__search-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-subtle);
+  font-size: var(--text-sm);
+}
+.watchlist__search-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  text-align: left;
+  background: var(--card);
+  border: none;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition);
+}
+.watchlist__search-result:last-child { border-bottom: none; }
+.watchlist__search-result:hover { background: var(--blue-tint); }
+
+.watchlist__result-symbol { font-family: var(--font-mono); font-weight: 700; font-size: var(--text-base); color: var(--text-primary); }
+.watchlist__result-name   { font-size: var(--text-xs); color: var(--text-subtle); margin-top: 1px; }
+.watchlist__result-price  { font-family: var(--font-mono); font-size: var(--text-sm); color: var(--text-secondary); }
+.watchlist__add-badge {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--gain);
+  background: var(--gain-bg);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+
+/* Watched instruments table card */
+.watchlist__table-card { padding: 0; overflow: hidden; }
+
+.watchlist__row-symbol-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+}
+.watchlist__row-symbol-btn:hover span:first-child { color: var(--blue-accent); }
+
+.watchlist__remove-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--warning-bg);
+  color: var(--warning);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.watchlist__remove-btn:hover {
+  background: var(--loss-bg);
+  color: var(--loss);
+}
