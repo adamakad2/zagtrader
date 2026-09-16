@@ -1,0 +1,150 @@
+/* NavBar.css — Shared top navigation bar */
+
+/* Sticky bar that sits above all page content */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+.navbar__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Logo (also acts as a home link) */
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.navbar__logo-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar__logo-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+
+/* Navigation links group */
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 20px;
+}
+
+/* Individual nav link button */
+.navbar__link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.navbar__link:hover { color: var(--text-primary); background: var(--surface); }
+
+/* Active state — highlighted with brand tint */
+.navbar__link--active {
+  background: var(--blue-tint);
+  color: var(--navy);
+  font-weight: 600;
+}
+.navbar__link--active:hover { background: var(--blue-tint); }
+
+/* Right side: account + sign-out */
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Clickable avatar + username (goes to Account page) */
+.navbar__account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.navbar__account:hover { background: var(--surface); }
+.navbar__account--active { background: var(--blue-tint); }
+
+.navbar__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.navbar__username {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.navbar__account--active .navbar__username { color: var(--navy); }
+
+/* Divider between account and sign-out */
+.navbar__divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* Sign-out link */
+.navbar__signout {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-subtle);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.navbar__signout:hover { color: var(--text-muted); }
+
+/* Hide link labels on small screens, show only icons */
+@media (max-width: 640px) {
+  .navbar__link-label { display: none; }
+  .navbar__username    { display: none; }
+}

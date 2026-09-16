@@ -1,0 +1,150 @@
+/* Account.css */
+
+.acct { min-height: 100vh; background: var(--surface); }
+.acct__main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Avatar + name hero strip */
+.acct__hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: var(--radius-xl);
+  padding: 28px 28px 32px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.acct__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+.acct__hero-name { font-size: var(--text-xl); font-weight: 800; }
+.acct__hero-email { font-size: var(--text-sm); color: rgba(255,255,255,0.6); margin-top: 3px; }
+.acct__hero-since { font-size: var(--text-xs); color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+/* Card sections */
+.acct__section { padding: 24px; }
+.acct__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.acct__section-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.acct__section-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  background: var(--blue-tint);
+  color: var(--blue-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Edit / Save / Cancel button strip */
+.acct__edit-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+/* Field rows */
+.acct__field { margin-bottom: 16px; }
+.acct__field:last-child { margin-bottom: 0; }
+
+/* Cash balance read-only card */
+.acct__cash {
+  background: linear-gradient(135deg, var(--blue-tint) 0%, #dce9f9 100%);
+  border: 1px solid var(--blue-tint-2);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.acct__cash-label { font-size: var(--text-sm); color: var(--text-muted); font-weight: 500; }
+.acct__cash-val {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--navy);
+}
+
+/* Divider within a card */
+.acct__divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* Security section rows */
+.acct__security-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.acct__security-row:last-child { border-bottom: none; padding-bottom: 0; }
+.acct__security-info { display: flex; align-items: center; gap: 10px; }
+.acct__security-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.acct__security-dot--on  { background: var(--gain); }
+.acct__security-dot--off { background: var(--text-placeholder); }
+.acct__security-label { font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); }
+.acct__security-sub   { font-size: var(--text-xs); color: var(--text-subtle); margin-top: 1px; }
+
+/* Danger zone */
+.acct__danger { border-color: var(--loss-border) !important; }
+.acct__danger-section-title { color: var(--loss) !important; }
+.acct__danger-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.acct__danger-info p { font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); }
+.acct__danger-info span { font-size: var(--text-xs); color: var(--text-muted); }
+
+/* Success toast */
+.acct__toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--gain);
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.25s ease;
+  z-index: 9999;
+}
+@keyframes toastIn { from { transform: translateY(20px); opacity:0; } to { transform: translateY(0); opacity:1; } }

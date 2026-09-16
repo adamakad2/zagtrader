@@ -1,0 +1,186 @@
+/* Dashboard.css — Main portfolio dashboard page */
+
+.dashboard { min-height: 100vh; background: var(--surface); }
+
+/* ── Main content area ──────────────────────────────────────────── */
+.dashboard__main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Hero card (navy gradient) ──────────────────────────────────── */
+.dashboard__hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+@media (min-width: 640px) {
+  .dashboard__hero-inner {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.dashboard__hero-left {}
+.dashboard__portfolio-label {
+  font-size: var(--text-sm);
+  color: rgba(255,255,255,0.6);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.dashboard__total-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-4xl);
+  font-weight: 800;
+  color: white;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.dashboard__hero-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+@media (min-width: 640px) {
+  .dashboard__hero-right { align-items: flex-end; }
+}
+.dashboard__cash-label {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2px;
+}
+.dashboard__cash-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: white;
+}
+
+/* Quick action buttons row */
+.dashboard__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.dashboard__action-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.dashboard__action-btn:hover { opacity: 0.85; }
+.dashboard__action-btn--deposit  { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.2); }
+.dashboard__action-btn--withdraw { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.14); }
+.dashboard__action-btn--buy      { background: var(--gain); color: white; }
+.dashboard__action-btn--sell     { background: var(--loss); color: white; }
+
+/* ── Summary stats row (4 cards) ────────────────────────────────── */
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .dashboard__stats { grid-template-columns: repeat(4, 1fr); }
+}
+/* Make stat cards clickable when they link to instrument detail */
+.stat-card--link {
+  cursor: pointer;
+  transition: box-shadow var(--transition);
+}
+.stat-card--link:hover { box-shadow: var(--shadow-md); }
+
+/* ── Charts row ──────────────────────────────────────────────────── */
+.dashboard__charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 1000px) {
+  .dashboard__charts { grid-template-columns: 1fr 2fr; }
+}
+.dashboard__chart-card { padding: 22px; }
+.dashboard__chart-card .section-title { margin-bottom: 16px; }
+
+/* ── Holdings table ─────────────────────────────────────────────── */
+.dashboard__holdings { overflow: hidden; }
+.dashboard__holdings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.dashboard__holdings-actions { display: flex; gap: 8px; }
+
+/* Overflow wrapper so the table scrolls horizontally on mobile */
+.dashboard__holdings-scroll { overflow-x: auto; }
+
+/* Symbol cell: coloured icon + ticker + sector */
+.holding-symbol {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.holding-symbol__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--navy);
+  color: white;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.holding-symbol__ticker {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--text-primary);
+}
+.holding-symbol__sector { font-size: var(--text-xs); color: var(--text-subtle); margin-top: 1px; }
+
+/* Gain/loss cell: value + badge stacked */
+.holding-gl {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+.holding-gl__value {
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+/* Inline buy/sell buttons in each row */
+.holding-row-btns {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+/* Table footer totals row */
+.dashboard__holdings-footer td {
+  border-top: 2px solid var(--border) !important;
+  background: var(--surface);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 12px 20px;
+}
+.dashboard__holdings-footer .mono { color: var(--text-primary); }
