@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { ModalType } from "../types";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
@@ -12,17 +13,31 @@ interface Props {
   onConfirm: (amount: number, type: "DEPOSIT" | "WITHDRAWAL") => void;
 }
 
+// Preset buttons shown for quick amount entry
 const QUICK_AMOUNTS = [500, 1000, 2500, 5000];
 
+/**
+ * DepositWithdrawModal — the Deposit/Withdraw popup. Same component
+ * handles both, switching wording/validation based on `mode`.
+ * On deposit, confirming redirects to Stripe (handled by the parent's
+ * onConfirm callback) rather than completing instantly like a withdrawal.
+ */
 export default function DepositWithdrawModal({ mode, cashBalance, onClose, onConfirm }: Props) {
   const [amount, setAmount] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
   const numAmount = parseFloat(amount) || 0;
   const isWithdraw = mode === "withdraw";
+  // Withdrawals can't exceed the current cash balance
   const exceedsBalance = isWithdraw && numAmount > cashBalance;
   const valid = numAmount > 0 && !exceedsBalance;
 
+  /**
+   * handleConfirm — runs when the Deposit/Withdraw button is clicked.
+   * Shows a brief "Processing…" state, then hands off to the parent's
+   * onConfirm (which either redirects to Stripe for a deposit, or
+   * calls the withdraw API directly) and closes the modal.
+   */
   function handleConfirm() {
     if (!valid) return;
     setConfirmed(true);

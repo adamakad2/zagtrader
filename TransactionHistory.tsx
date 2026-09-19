@@ -2,15 +2,18 @@ import { useState } from "react";
 import NavBar from "./NavBar";
 import type { Transaction, TxFilter, SortDir, Screen } from "../types";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
+/** Formats a date string as "Mon D, YYYY", e.g. "2024-06-01" -> "Jun 1, 2024" */
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
 const TX_FILTERS: TxFilter[] = ["ALL", "BUY", "SELL", "DEPOSIT", "WITHDRAWAL"];
 
+// Color + short label shown on each transaction's type badge
 const TYPE_STYLES: Record<string, { bg: string; color: string; label: string }> = {
   BUY:        { bg: "#F0FDF4", color: "#16A34A", label: "BUY" },
   SELL:       { bg: "#FEF2F2", color: "#DC2626", label: "SELL" },
@@ -24,11 +27,18 @@ interface Props {
   onLogout: () => void;
 }
 
+/**
+ * TransactionHistory — the full ledger page: every buy, sell, deposit,
+ * and withdrawal, filterable by type, searchable by symbol/type text,
+ * and sortable by date.
+ */
 export default function TransactionHistory({ transactions, onNavigate, onLogout }: Props) {
   const [filter, setFilter] = useState<TxFilter>("ALL");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [search, setSearch] = useState("");
 
+  // Applies the type filter, the search text, then sorts by date —
+  // recalculated on every render since it's cheap for this data size.
   const filtered = transactions
     .filter((t) => filter === "ALL" || t.TransactionType === filter)
     .filter((t) =>

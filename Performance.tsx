@@ -14,13 +14,18 @@ import {
 import NavBar from "./NavBar";
 import type { Holding, Transaction, Screen } from "../types";
 
+/** Formats a number as USD currency with no decimals, e.g. 1234.5 -> "$1,235" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
 }
+/** Formats a number as USD currency with cents, e.g. 1234.5 -> "$1,234.50" */
 function fmtFull(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
 
+// Fixed brand colors per sector, so the same sector always gets the same
+// color across visits. Any sector not listed here falls back to
+// FALLBACK_COLORS, cycled by position.
 const SECTOR_COLORS: Record<string, string> = {
   Technology: "#1F3864",
   Semiconductors: "#4472C4",
@@ -41,13 +46,20 @@ interface Props {
   onLogout: () => void;
 }
 
+/**
+ * Performance — a read-only analytics page built entirely from data
+ * already available elsewhere (Holdings + Transactions): best/worst
+ * performer, sector allocation breakdown, and lifetime deposit/withdrawal/
+ * investment totals. No new data is fetched here — everything is derived.
+ */
 export default function Performance({ holdings, transactions, totalValue, cashBalance, onNavigate, onViewInstrument, onLogout }: Props) {
-  // Best / worst performers
+  // Best / worst performers, by percentage gain/loss
   const sorted = [...holdings].sort((a, b) => b.GainLossPct - a.GainLossPct);
   const best = sorted[0] ?? null;
   const worst = sorted[sorted.length - 1] ?? null;
 
-  // Sector allocation
+  // Sector allocation: group each holding's market value by sector,
+  // add cash as its own "sector", then convert to percentages for the chart
   const sectorMap: Record<string, number> = {};
   holdings.forEach((h) => {
     sectorMap[h.Sector] = (sectorMap[h.Sector] ?? 0) + h.MarketValue;
@@ -63,7 +75,9 @@ export default function Performance({ holdings, transactions, totalValue, cashBa
     }))
     .sort((a, b) => b.value - a.value);
 
-  // Stats from transactions
+  // Lifetime stats computed straight from the transaction ledger:
+  // how much cash has ever gone in/out, and how that compares to the
+  // portfolio's current total value (the "overall gain" since inception).
   const totalDeposited = transactions.filter((t) => t.TransactionType === "DEPOSIT").reduce((s, t) => s + t.TotalAmount, 0);
   const totalWithdrawn = transactions.filter((t) => t.TransactionType === "WITHDRAWAL").reduce((s, t) => s + t.TotalAmount, 0);
   const totalInvested = transactions.filter((t) => t.TransactionType === "BUY").reduce((s, t) => s + t.TotalAmount, 0);

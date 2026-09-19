@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Holding, ModalType } from "../types";
 import type { InstrumentListItem } from "../api";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
@@ -15,6 +16,12 @@ interface Props {
   onConfirm: (symbol: string, qty: number, price: number, type: "BUY" | "SELL") => void;
 }
 
+/**
+ * BuySellModal — the Buy/Sell popup opened from the Dashboard or an
+ * Instrument Detail page. Handles both modes with the same component:
+ * `mode` controls the wording, color, and whether the search list is
+ * limited to instruments the user already owns (sell mode only).
+ */
 export default function BuySellModal({ mode, holdings, instruments, prefilledSymbol, onClose, onConfirm }: Props) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<InstrumentListItem | null>(
@@ -23,12 +30,15 @@ export default function BuySellModal({ mode, holdings, instruments, prefilledSym
   const [quantity, setQuantity] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
+  // Instruments matching the current search text, by symbol or name
   const filtered = instruments.filter(
     (i) =>
       i.Symbol.toLowerCase().includes(search.toLowerCase()) ||
       i.InstrumentName.toLowerCase().includes(search.toLowerCase())
   );
 
+  // If selling, look up how many shares are currently held so the
+  // quantity input can be capped and a "Sell all" shortcut can appear.
   const holding = selected
     ? holdings.find((h) => h.Symbol === selected.Symbol)
     : null;
@@ -36,8 +46,17 @@ export default function BuySellModal({ mode, holdings, instruments, prefilledSym
 
   const qty = parseFloat(quantity) || 0;
   const totalCost = selected ? qty * selected.CurrentPrice : 0;
+  // The order is only valid once an instrument is picked, a positive
+  // quantity is entered, and — for sells — that quantity doesn't exceed
+  // what's actually owned.
   const valid = selected && qty > 0 && (mode === "buy" || (mode === "sell" && qty <= (maxQty ?? 0)));
 
+  /**
+   * handleConfirm — runs when "Confirm Purchase/Sale" is clicked.
+   * Shows a brief "Processing…" state, then calls the parent's onConfirm
+   * callback (which actually executes the trade against the backend)
+   * and closes the modal.
+   */
   function handleConfirm() {
     if (!selected || !valid) return;
     setConfirmed(true);

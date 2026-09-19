@@ -6,6 +6,9 @@ interface NavBarProps {
   onLogout: () => void;
 }
 
+// The links shown in the top nav bar, in order. Each maps to one of the
+// `screen` values in types.ts — adding a new page means adding an entry
+// here too, or it won't be reachable from the nav.
 const NAV_LINKS: { label: string; screen: Screen; icon: React.ReactNode }[] = [
   {
     label: "Dashboard",
@@ -39,6 +42,11 @@ const NAV_LINKS: { label: string; screen: Screen; icon: React.ReactNode }[] = [
   },
 ];
 
+/**
+ * NavBar — the top navigation bar shown on every logged-in page
+ * (Dashboard, Performance, History, Instrument Detail, Account).
+ * Highlights whichever link matches `activeScreen`.
+ */
 export default function NavBar({ activeScreen, onNavigate, onLogout }: NavBarProps) {
   return (
     <nav className="bg-white border-b sticky top-0 z-20" style={{ borderColor: "#E2E8F0" }}>

@@ -2,6 +2,7 @@ import type { Holding, ModalType, Screen, AllocationSlice } from "../types";
 import { AllocationDonut, PortfolioLineChart } from "./Charts";
 import NavBar from "./NavBar";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
@@ -18,6 +19,10 @@ interface Props {
   onLogout: () => void;
 }
 
+/**
+ * GainLossBadge — small reusable pill showing a dollar gain/loss amount
+ * next to a percentage badge, colored green for gains and red for losses.
+ */
 function GainLossBadge({ value, pct }: { value: number; pct: number }) {
   const pos = value >= 0;
   return (
@@ -46,10 +51,14 @@ export default function Dashboard({
   onViewInstrument,
   onLogout,
 }: Props) {
+  // Total unrealized gain/loss across every holding, in dollars and as a
+  // percentage of total cost basis (what was actually paid for everything).
   const totalGain = holdings.reduce((s, h) => s + h.GainLoss, 0);
   const totalCost = holdings.reduce((s, h) => s + h.Quantity * h.AvgCostPrice, 0);
   const totalGainPct = totalCost > 0 ? (totalGain / totalCost) * 100 : 0;
 
+  // The single best- and worst-performing holdings by percentage gain,
+  // shown as highlight cards.
   const bestHolder = [...holdings].sort((a, b) => b.GainLossPct - a.GainLossPct)[0];
   const worstHolder = [...holdings].sort((a, b) => a.GainLossPct - b.GainLossPct)[0];
 

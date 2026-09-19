@@ -2,9 +2,11 @@ import { useState } from "react";
 import NavBar from "./NavBar";
 import type { Screen, Portfolio, UserProfile } from "../types";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
+/** Formats a date string as "Month Year", e.g. "2024-01-08" -> "January 2024" */
 function fmtDate(d: string) {
   return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long" });
 }
@@ -27,6 +29,11 @@ interface FieldProps {
   hint?: string;
 }
 
+/**
+ * EditableField — a labeled text input with a focus-highlight border,
+ * reused for every field on this page. `readOnly` fields (like the
+ * account creation date) render greyed-out and non-interactive.
+ */
 function EditableField({ label, value, onChange, readOnly = false, type = "text", hint }: FieldProps) {
   const [focused, setFocused] = useState(false);
   return (
@@ -53,6 +60,10 @@ function EditableField({ label, value, onChange, readOnly = false, type = "text"
   );
 }
 
+/**
+ * Account — the account settings page: username/email fields and the
+ * portfolio's display name, plus a (UI-only) delete-account confirmation.
+ */
 export default function Account({ user, portfolio, onNavigate, onLogout, onUpdateProfile, onUpdatePortfolioName }: Props) {
   const [username, setUsername] = useState(user.Username);
   const [email, setEmail] = useState(user.Email);
@@ -60,6 +71,12 @@ export default function Account({ user, portfolio, onNavigate, onLogout, onUpdat
   const [saved, setSaved] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  /**
+   * handleSave — runs when the form is submitted. Pushes the edited
+   * username/email and portfolio name up to App.tsx (currently stored
+   * locally only — there's no backend endpoint yet to persist these),
+   * then briefly shows a "Saved" confirmation message.
+   */
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
     onUpdateProfile({ ...user, Username: username, Email: email });

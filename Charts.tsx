@@ -14,6 +14,7 @@ import {
 import { portfolioHistory } from "../data";
 import type { DateRange, AllocationSlice } from "../types";
 
+// Fixed color sequence for the pie/donut chart slices, cycled by index
 const ALLOCATION_COLORS = [
   "#4472C4",
   "#1F3864",
@@ -23,10 +24,12 @@ const ALLOCATION_COLORS = [
   "#64748B",
 ];
 
+/** Formats a number compactly for chart axis labels, e.g. 12500 -> "$12.5k" */
 function fmt(v: number) {
   return v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
 }
 
+/** Formats a number as whole-dollar USD currency, e.g. 1234.5 -> "$1,235" */
 function fmtFull(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(v);
 }
@@ -36,6 +39,11 @@ interface DonutChartProps {
   allocationData: AllocationSlice[];
 }
 
+/**
+ * AllocationDonut — the pie/donut chart showing portfolio allocation by
+ * holding (plus a Cash slice). Clicking a legend row or hovering a slice
+ * highlights it and shows its details in the center of the donut.
+ */
 export function AllocationDonut({ totalValue, allocationData }: DonutChartProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -109,6 +117,11 @@ export function AllocationDonut({ totalValue, allocationData }: DonutChartProps)
 
 const DATE_RANGES: DateRange[] = ["1W", "1M", "3M", "1Y", "ALL"];
 
+/**
+ * filterData — trims the sample portfolio value history down to the
+ * selected date range, counting backwards from the most recent data
+ * point (not from today's real date, since this is currently sample data).
+ */
 function filterData(range: DateRange) {
   const all = portfolioHistory;
   const last = new Date(all[all.length - 1].date);
@@ -125,6 +138,11 @@ function filterData(range: DateRange) {
   return all.filter((p) => new Date(p.date) >= cutoff);
 }
 
+/**
+ * formatXAxis — formats a chart x-axis date label: short "Jan 5" style
+ * for short ranges, "Jan '24" month/year style for longer ones where
+ * individual days would be too cramped to read.
+ */
 function formatXAxis(dateStr: string, range: DateRange) {
   const d = new Date(dateStr);
   if (range === "1W" || range === "1M") {
@@ -137,6 +155,14 @@ interface LineChartProps {
   height?: number;
 }
 
+/**
+ * PortfolioLineChart — the value-over-time area chart on the Dashboard,
+ * with a date range selector (1W/1M/3M/1Y/ALL) above it.
+ *
+ * Currently reads from the static sample `portfolioHistory` data rather
+ * than the real backend history endpoint — see the note in App.tsx's
+ * loadAllData about wiring this up as a follow-up.
+ */
 export function PortfolioLineChart({ height = 240 }: LineChartProps) {
   const [range, setRange] = useState<DateRange>("3M");
   const data = filterData(range);

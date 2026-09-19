@@ -4,6 +4,15 @@ interface LoginProps {
   onLogin: () => void;
 }
 
+/**
+ * Login — the sign-in / sign-up screen, shown before any portfolio data
+ * loads. Toggles between two modes ('login' and 'signup') using the same
+ * form, showing extra fields (name, terms checkbox) only in signup mode.
+ *
+ * Note: this doesn't call a real authentication endpoint yet — it just
+ * simulates a network delay and then calls onLogin(). Wiring this up to
+ * a real register.php/login.php endpoint is a natural next step.
+ */
 export default function Login({ onLogin }: LoginProps) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -11,6 +20,11 @@ export default function Login({ onLogin }: LoginProps) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  /**
+   * handleSubmit — runs when the form is submitted (either mode).
+   * Shows a brief loading spinner, then calls onLogin() to hand control
+   * back to App.tsx, which switches to the Dashboard and fetches real data.
+   */
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);

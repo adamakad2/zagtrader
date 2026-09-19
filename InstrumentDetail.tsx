@@ -12,9 +12,11 @@ import NavBar from "./NavBar";
 import type { Holding, ModalType, Screen, DateRange } from "../types";
 import { instrumentCatalog, getPriceHistory } from "../data";
 
+/** Formats a number as USD currency, e.g. 1234.5 -> "$1,234.50" */
 function fmt(v: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(v);
 }
+/** Formats a number compactly for chart axis labels, e.g. 12500 -> "$12.5k" */
 function fmtCompact(v: number) {
   if (v >= 1000) return `$${(v / 1000).toFixed(1)}k`;
   return `$${v.toFixed(0)}`;
@@ -22,6 +24,12 @@ function fmtCompact(v: number) {
 
 const DATE_RANGES: DateRange[] = ["1W", "1M", "3M", "1Y", "ALL"];
 
+/**
+ * filterHistory — trims an instrument's full price history down to just
+ * the selected date range (1 week, 1 month, etc.), counting backwards
+ * from the most recent data point rather than from today's real date —
+ * this keeps the chart working correctly even with sample/historical data.
+ */
 function filterHistory(symbol: string, range: DateRange) {
   const all = getPriceHistory(symbol);
   if (!all.length) return all;
@@ -32,6 +40,12 @@ function filterHistory(symbol: string, range: DateRange) {
   return all.filter((p) => new Date(p.PriceDate) >= cutoff);
 }
 
+/**
+ * formatLabel — formats a chart x-axis date label differently depending
+ * on the zoom level: short ranges show "Jan 5" style dates, longer ranges
+ * show "Jan '24" style month/year labels since individual days would be
+ * too cramped to read.
+ */
 function formatLabel(dateStr: string, range: DateRange) {
   const d = new Date(dateStr);
   if (range === "1W" || range === "1M") return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -46,6 +60,12 @@ interface Props {
   onLogout: () => void;
 }
 
+/**
+ * InstrumentDetail — the per-stock page shown when clicking a symbol
+ * from the Dashboard, Watchlist, or search. Shows a price history chart
+ * with adjustable date range, the user's current position in this
+ * instrument (if any), and Buy/Sell buttons pre-filled to this symbol.
+ */
 export default function InstrumentDetail({ symbol, holdings, onNavigate, onOpenModal, onLogout }: Props) {
   const [range, setRange] = useState<DateRange>("3M");
 
@@ -55,6 +75,8 @@ export default function InstrumentDetail({ symbol, holdings, onNavigate, onOpenM
 
   const positive = (info?.DayChange ?? 0) >= 0;
 
+  // Min/max/first close price in the current range — used to scale the
+  // chart's y-axis and to calculate the period return shown above it.
   const minVal = history.length ? Math.min(...history.map((d) => d.ClosePrice)) : 0;
   const maxVal = history.length ? Math.max(...history.map((d) => d.ClosePrice)) : 0;
   const firstVal = history[0]?.ClosePrice ?? 0;
